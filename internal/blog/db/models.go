@@ -1,7 +1,7 @@
-package models
+package db
 
 import (
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -12,8 +12,8 @@ type BlogItem struct {
 	Content  string             `bson:"content"`
 }
 
-func (b *BlogItem) DocumentToBlog() *blog.Blog {
-	return &blog.Blog{
+func (b *BlogItem) DocumentToBlog() *proto.Blog {
+	return &proto.Blog{
 		Id:       b.ID.Hex(),
 		AuthorId: b.AuthorID,
 		Tile:     b.Title,

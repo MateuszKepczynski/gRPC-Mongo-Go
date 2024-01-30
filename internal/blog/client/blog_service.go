@@ -2,17 +2,17 @@ package client
 
 import (
 	"context"
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
 	"log"
 	"time"
 )
 
-func CreateBlog(c blog.BlogServiceClient) (string, error) {
+func CreateBlog(c proto.BlogServiceClient) (string, error) {
 	log.Println("Create blog invoked")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	req := &blog.Blog{
+	req := &proto.Blog{
 		AuthorId: "Matthew",
 		Tile:     "Hello",
 		Content:  "World",
@@ -28,13 +28,13 @@ func CreateBlog(c blog.BlogServiceClient) (string, error) {
 	return res.Id, nil
 }
 
-func ReadBlog(c blog.BlogServiceClient, id string) (*blog.Blog, error) {
+func ReadBlog(c proto.BlogServiceClient, id string) (*proto.Blog, error) {
 	log.Println("Read client blog invoked")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	req := &blog.BlogId{Id: id}
+	req := &proto.BlogId{Id: id}
 
 	res, err := c.ReadBlog(ctx, req)
 	if err != nil {
@@ -46,7 +46,7 @@ func ReadBlog(c blog.BlogServiceClient, id string) (*blog.Blog, error) {
 	return res, nil
 }
 
-func UpdateBlog(c blog.BlogServiceClient, b *blog.Blog) error {
+func UpdateBlog(c proto.BlogServiceClient, b *proto.Blog) error {
 	log.Println("Client update blog invoked")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

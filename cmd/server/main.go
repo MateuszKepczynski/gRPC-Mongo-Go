@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/grpc-mongo-go/internal/server"
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
+	"github.com/grpc-mongo-go/internal/blog/server"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -27,7 +27,7 @@ func main() {
 
 	s := grpc.NewServer()
 
-	blog.RegisterBlogServiceServer(s, blogServer)
+	proto.RegisterBlogServiceServer(s, blogServer)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatal(lis)

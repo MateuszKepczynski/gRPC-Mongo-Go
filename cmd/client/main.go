@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/grpc-mongo-go/internal/client"
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
+	"github.com/grpc-mongo-go/internal/blog/client"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -18,7 +18,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := blog.NewBlogServiceClient(conn)
+	c := proto.NewBlogServiceClient(conn)
 
 	id, err := client.CreateBlog(c)
 	if err != nil {

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package blog;
 
-option go_package = "github.com/grpc-mongo-go/proto/blog";
+option go_package = "github.com/grpc-mongo-go/gen/proto";
 
 import "google/protobuf/empty.proto";
 

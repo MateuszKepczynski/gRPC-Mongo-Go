@@ -2,14 +2,14 @@ package server
 
 import (
 	"context"
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
 type Server struct {
-	blog.BlogServiceServer
+	proto.BlogServiceServer
 	client *mongo.Client
 }
 

@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/grpc-mongo-go/internal/db/models"
-	"github.com/grpc-mongo-go/proto/blog"
+	"github.com/grpc-mongo-go/gen/proto"
+	"github.com/grpc-mongo-go/internal/blog/db"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
@@ -13,9 +13,9 @@ import (
 	"log"
 )
 
-func (s *Server) CreateBlog(ctx context.Context, req *blog.Blog) (*blog.BlogId, error) {
+func (s *Server) CreateBlog(ctx context.Context, req *proto.Blog) (*proto.BlogId, error) {
 	log.Println("Create blog server invoked")
-	data := models.BlogItem{
+	data := db.BlogItem{
 		AuthorID: req.AuthorId,
 		Title:    req.Tile,
 		Content:  req.Content,
@@ -40,10 +40,10 @@ func (s *Server) CreateBlog(ctx context.Context, req *blog.Blog) (*blog.BlogId, 
 			)
 	}
 
-	return &blog.BlogId{Id: oid.Hex()}, nil
+	return &proto.BlogId{Id: oid.Hex()}, nil
 }
 
-func (s *Server) ReadBlog(ctx context.Context, req *blog.BlogId) (*blog.Blog, error) {
+func (s *Server) ReadBlog(ctx context.Context, req *proto.BlogId) (*proto.Blog, error) {
 	log.Println("Read blog invoked")
 
 	oid, err := primitive.ObjectIDFromHex(req.Id)
@@ -57,7 +57,7 @@ func (s *Server) ReadBlog(ctx context.Context, req *blog.BlogId) (*blog.Blog, er
 	filter := bson.M{"_id": oid}
 	res := s.client.Database(blogdb).Collection(blogCollection).FindOne(ctx, filter)
 
-	data := &models.BlogItem{}
+	data := &db.BlogItem{}
 	if err := res.Decode(data); err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
@@ -69,7 +69,7 @@ func (s *Server) ReadBlog(ctx context.Context, req *blog.BlogId) (*blog.Blog, er
 	return data.DocumentToBlog(), nil
 }
 
-func (s *Server) UpdatedBlog(ctx context.Context, req *blog.Blog) (*emptypb.Empty, error) {
+func (s *Server) UpdatedBlog(ctx context.Context, req *proto.Blog) (*emptypb.Empty, error) {
 	log.Println("Server Update Blog Invoked")
 	oid, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
@@ -79,7 +79,7 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *blog.Blog) (*emptypb.Empt
 		)
 	}
 
-	data := &models.BlogItem{
+	data := &db.BlogItem{
 
 		AuthorID: req.AuthorId,
 		Title:    req.Tile,
