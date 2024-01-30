@@ -12,6 +12,12 @@ type BlogItem struct {
 	Content  string             `bson:"content"`
 }
 
+// DocumentToBlog converts a BlogItem document to a proto.Blog.
+// It takes a BlogItem pointer as receiver and returns a new proto.Blog
+// instance populated with the corresponding data from the BlogItem.
+//
+// Returns:
+//   - *proto.Blog: A proto.Blog instance with data from the BlogItem.
 func (b *BlogItem) DocumentToBlog() *proto.Blog {
 	return &proto.Blog{
 		Id:       b.ID.Hex(),

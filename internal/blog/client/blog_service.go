@@ -9,6 +9,17 @@ import (
 	"time"
 )
 
+// CreateBlog creates a new blog using the provided BlogServiceClient.
+// It sends a request to the server to create a blog with the specified
+// AuthorId, Title, and Content. The function returns the ID of the
+// created blog and an error, if any.
+//
+// Parameters:
+//   - c: The BlogServiceClient used to communicate with the server.
+//
+// Returns:
+//   - string: The ID of the created blog.
+//   - error: An error, if any, encountered during the blog creation process.
 func CreateBlog(c proto.BlogServiceClient) (string, error) {
 	log.Println("Create blog invoked")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -30,6 +41,17 @@ func CreateBlog(c proto.BlogServiceClient) (string, error) {
 	return res.Id, nil
 }
 
+// ReadBlog retrieves a blog with the specified ID using the provided BlogServiceClient.
+// It sends a request to the server to read a blog based on the given ID. The function
+// returns the retrieved blog and an error, if any.
+//
+// Parameters:
+//   - c: The BlogServiceClient used to communicate with the server.
+//   - id: The ID of the blog to be retrieved.
+//
+// Returns:
+//   - *proto.Blog: The retrieved blog.
+//   - error: An error, if any, encountered during the blog retrieval process.
 func ReadBlog(c proto.BlogServiceClient, id string) (*proto.Blog, error) {
 	log.Println("Read client blog invoked")
 
@@ -48,13 +70,23 @@ func ReadBlog(c proto.BlogServiceClient, id string) (*proto.Blog, error) {
 	return res, nil
 }
 
+// UpdateBlog updates an existing blog using the provided BlogServiceClient.
+// It sends a request to the server to update the specified blog. The function
+// returns an error if the update process encounters any issues.
+//
+// Parameters:
+//   - c: The BlogServiceClient used to communicate with the server.
+//   - b: The blog with updated information to be sent for updating.
+//
+// Returns:
+//   - error: An error, if any, encountered during the blog update process.
 func UpdateBlog(c proto.BlogServiceClient, b *proto.Blog) error {
 	log.Println("Client update blog invoked")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := c.UpdatedBlog(ctx, b); err != nil {
+	if _, err := c.UpdateBlog(ctx, b); err != nil {
 		return err
 	}
 
@@ -62,6 +94,15 @@ func UpdateBlog(c proto.BlogServiceClient, b *proto.Blog) error {
 	return nil
 }
 
+// ListBlogs retrieves a list of blogs using the provided BlogServiceClient.
+// It sends a request to the server to list all available blogs. The function
+// logs each received blog and returns an error if the list operation encounters any issues.
+//
+// Parameters:
+//   - c: The BlogServiceClient used to communicate with the server.
+//
+// Returns:
+//   - error: An error, if any, encountered during the blog list operation.
 func ListBlogs(c proto.BlogServiceClient) error {
 	log.Println("Client list blogs invoked")
 
@@ -88,6 +129,16 @@ func ListBlogs(c proto.BlogServiceClient) error {
 	}
 }
 
+// DeleteBlog deletes a blog with the specified ID using the provided BlogServiceClient.
+// It sends a request to the server to delete the blog identified by the given ID.
+// The function returns an error if the delete operation encounters any issues.
+//
+// Parameters:
+//   - c: The BlogServiceClient used to communicate with the server.
+//   - id: The ID of the blog to be deleted.
+//
+// Returns:
+//   - error: An error, if any, encountered during the blog delete operation.
 func DeleteBlog(c proto.BlogServiceClient, id string) error {
 	log.Println("Client delete blog invoked")
 
