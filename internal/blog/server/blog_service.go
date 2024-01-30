@@ -112,3 +112,41 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *proto.Blog) (*emptypb.Emp
 
 	return &emptypb.Empty{}, nil
 }
+
+func (s *Server) ListBlogs(_ *emptypb.Empty, stream proto.BlogService_ListBlogsServer) error {
+	ctx := context.Background()
+	res, err := s.client.Database(blogdb).Collection(blogCollection).Find(ctx, primitive.D{{}})
+	if err != nil {
+		return status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Could not find blogs - %v\n", err),
+		)
+	}
+	defer res.Close(ctx)
+
+	for res.Next(ctx) {
+		data := &db.BlogItem{}
+		if err := res.Decode(data); err != nil {
+			return status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Cannot decode response to blog structure - %v\n", err),
+			)
+		}
+
+		if err := stream.Send(data.DocumentToBlog()); err != nil {
+			return status.Errorf(
+				codes.Internal,
+				fmt.Sprintf("Cannot send data - %v", err),
+			)
+		}
+	}
+
+	if err := res.Err(); err != nil {
+		return status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Unknow error - %v", err),
+		)
+	}
+
+	return nil
+}
