@@ -27,6 +27,7 @@ type BlogServiceClient interface {
 	ReadBlog(ctx context.Context, in *BlogId, opts ...grpc.CallOption) (*Blog, error)
 	UpdatedBlog(ctx context.Context, in *Blog, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListBlogs(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (BlogService_ListBlogsClient, error)
+	DeleteBlog(ctx context.Context, in *BlogId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type blogServiceClient struct {
@@ -96,6 +97,15 @@ func (x *blogServiceListBlogsClient) Recv() (*Blog, error) {
 	return m, nil
 }
 
+func (c *blogServiceClient) DeleteBlog(ctx context.Context, in *BlogId, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/blog.BlogService/DeleteBlog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BlogServiceServer is the server API for BlogService service.
 // All implementations must embed UnimplementedBlogServiceServer
 // for forward compatibility
@@ -104,6 +114,7 @@ type BlogServiceServer interface {
 	ReadBlog(context.Context, *BlogId) (*Blog, error)
 	UpdatedBlog(context.Context, *Blog) (*emptypb.Empty, error)
 	ListBlogs(*emptypb.Empty, BlogService_ListBlogsServer) error
+	DeleteBlog(context.Context, *BlogId) (*emptypb.Empty, error)
 	mustEmbedUnimplementedBlogServiceServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedBlogServiceServer) UpdatedBlog(context.Context, *Blog) (*empt
 }
 func (UnimplementedBlogServiceServer) ListBlogs(*emptypb.Empty, BlogService_ListBlogsServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListBlogs not implemented")
+}
+func (UnimplementedBlogServiceServer) DeleteBlog(context.Context, *BlogId) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBlog not implemented")
 }
 func (UnimplementedBlogServiceServer) mustEmbedUnimplementedBlogServiceServer() {}
 
@@ -211,6 +225,24 @@ func (x *blogServiceListBlogsServer) Send(m *Blog) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _BlogService_DeleteBlog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlogId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).DeleteBlog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.BlogService/DeleteBlog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).DeleteBlog(ctx, req.(*BlogId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BlogService_ServiceDesc is the grpc.ServiceDesc for BlogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +261,10 @@ var BlogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatedBlog",
 			Handler:    _BlogService_UpdatedBlog_Handler,
+		},
+		{
+			MethodName: "DeleteBlog",
+			Handler:    _BlogService_DeleteBlog_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

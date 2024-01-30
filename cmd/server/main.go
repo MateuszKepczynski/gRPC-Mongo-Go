@@ -16,7 +16,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	blogServer := server.NewBlogServer(ctx)
+	blogServer := server.NewBlogServer(ctx, blogDB, blogCollection)
 	defer blogServer.CloseDBConn(ctx)
 
 	lis, err := net.Listen("tcp", address)

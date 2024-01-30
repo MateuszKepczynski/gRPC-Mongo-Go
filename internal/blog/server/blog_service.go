@@ -22,7 +22,7 @@ func (s *Server) CreateBlog(ctx context.Context, req *proto.Blog) (*proto.BlogId
 	}
 
 	log.Println("Inserting data to DB")
-	res, err := s.client.Database(blogdb).Collection(blogCollection).InsertOne(ctx, data)
+	res, err := s.collection.InsertOne(ctx, data)
 	if err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
@@ -49,13 +49,13 @@ func (s *Server) ReadBlog(ctx context.Context, req *proto.BlogId) (*proto.Blog, 
 	oid, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
 		return nil, status.Errorf(
-			codes.Internal,
+			codes.InvalidArgument,
 			fmt.Sprintf("Cannot convert insertedID to OID - %v\n", err),
 		)
 	}
 
 	filter := bson.M{"_id": oid}
-	res := s.client.Database(blogdb).Collection(blogCollection).FindOne(ctx, filter)
+	res := s.collection.FindOne(ctx, filter)
 
 	data := &db.BlogItem{}
 	if err := res.Decode(data); err != nil {
@@ -74,7 +74,7 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *proto.Blog) (*emptypb.Emp
 	oid, err := primitive.ObjectIDFromHex(req.Id)
 	if err != nil {
 		return nil, status.Errorf(
-			codes.Internal,
+			codes.InvalidArgument,
 			fmt.Sprintf("Cannot convert insertedID to OID - %v\n", err),
 		)
 	}
@@ -86,14 +86,7 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *proto.Blog) (*emptypb.Emp
 		Content:  req.Content,
 	}
 
-	res, err := s.client.
-		Database(blogdb).
-		Collection(blogCollection).
-		UpdateOne(
-			ctx,
-			bson.M{"_id": oid},
-			bson.M{"$set": data},
-		)
+	res, err := s.collection.UpdateOne(ctx, bson.M{"_id": oid}, bson.M{"$set": data})
 	if err != nil {
 		return nil, status.Errorf(
 			codes.Internal,
@@ -115,7 +108,7 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *proto.Blog) (*emptypb.Emp
 
 func (s *Server) ListBlogs(_ *emptypb.Empty, stream proto.BlogService_ListBlogsServer) error {
 	ctx := context.Background()
-	res, err := s.client.Database(blogdb).Collection(blogCollection).Find(ctx, primitive.D{{}})
+	res, err := s.collection.Find(ctx, primitive.D{{}})
 	if err != nil {
 		return status.Errorf(
 			codes.Internal,
@@ -149,4 +142,31 @@ func (s *Server) ListBlogs(_ *emptypb.Empty, stream proto.BlogService_ListBlogsS
 	}
 
 	return nil
+}
+
+func (s *Server) DeleteBlog(ctx context.Context, req *proto.BlogId) (*emptypb.Empty, error) {
+	oid, err := primitive.ObjectIDFromHex(req.Id)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("Cannot convert insertedID to OID - %v\n", err),
+		)
+	}
+
+	res, err := s.collection.DeleteOne(ctx, primitive.M{"_id": oid})
+	if err != nil {
+		return nil, status.Errorf(
+			codes.Internal,
+			fmt.Sprintf("Cannot delete object under ID '%s' with error: %v", req.Id, err),
+		)
+	}
+
+	if res.DeletedCount < 1 {
+		return nil, status.Errorf(
+			codes.NotFound,
+			fmt.Sprintf("Cannot find any objects with given ID '%s'", req.Id),
+		)
+	}
+
+	return &emptypb.Empty{}, nil
 }

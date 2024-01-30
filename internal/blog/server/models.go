@@ -10,7 +10,8 @@ import (
 
 type Server struct {
 	proto.BlogServiceServer
-	client *mongo.Client
+	client     *mongo.Client
+	collection *mongo.Collection
 }
 
 func (s *Server) CloseDBConn(ctx context.Context) error {
@@ -21,11 +22,11 @@ func (s *Server) CloseDBConn(ctx context.Context) error {
 	return nil
 }
 
-func NewBlogServer(ctx context.Context) *Server {
+func NewBlogServer(ctx context.Context, database, collection string) *Server {
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:root@localhost:27017/"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &Server{client: client}
+	return &Server{client: client, collection: client.Database(database).Collection(collection)}
 }
