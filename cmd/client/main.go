@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
+	"time"
 )
 
 const address = "localhost:5051"
@@ -23,9 +24,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = client.ReadBlog(c, id)
+
+	blogData, err := client.ReadBlog(c, id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	blogData.Content = "Modified " + time.Now().String()
+	if err := client.UpdateBlog(c, blogData); err != nil {
+		log.Fatal(err)
+	}
 }

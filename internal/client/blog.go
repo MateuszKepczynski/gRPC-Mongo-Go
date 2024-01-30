@@ -45,3 +45,17 @@ func ReadBlog(c blog.BlogServiceClient, id string) (*blog.Blog, error) {
 
 	return res, nil
 }
+
+func UpdateBlog(c blog.BlogServiceClient, b *blog.Blog) error {
+	log.Println("Client update blog invoked")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if _, err := c.UpdatedBlog(ctx, b); err != nil {
+		return err
+	}
+
+	log.Print("Client successfully updated blog")
+	return nil
+}

@@ -108,5 +108,7 @@ func (s *Server) UpdatedBlog(ctx context.Context, req *blog.Blog) (*emptypb.Empt
 		)
 	}
 
+	log.Println("Server successfully updated blog")
+
 	return &emptypb.Empty{}, nil
 }
