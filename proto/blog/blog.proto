@@ -4,6 +4,8 @@ package blog;
 
 option go_package = "github.com/grpc-mongo-go/proto/blog";
 
+import "google/protobuf/empty.proto";
+
 message Blog {
   string id = 1;
   string author_id = 2;
@@ -18,4 +20,5 @@ message BlogId {
 service BlogService {
   rpc CreateBlog(Blog) returns (BlogId);
   rpc ReadBlog(BlogId) returns (Blog);
+  rpc UpdatedBlog(Blog) returns (google.protobuf.Empty);
 }
