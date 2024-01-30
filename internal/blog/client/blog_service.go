@@ -6,7 +6,6 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"io"
 	"log"
-	"time"
 )
 
 // CreateBlog creates a new blog using the provided BlogServiceClient.
@@ -20,10 +19,8 @@ import (
 // Returns:
 //   - string: The ID of the created blog.
 //   - error: An error, if any, encountered during the blog creation process.
-func CreateBlog(c proto.BlogServiceClient) (string, error) {
+func CreateBlog(ctx context.Context, c proto.BlogServiceClient) (string, error) {
 	log.Println("Create blog invoked")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	req := &proto.Blog{
 		AuthorId: "Matthew",
@@ -52,11 +49,8 @@ func CreateBlog(c proto.BlogServiceClient) (string, error) {
 // Returns:
 //   - *proto.Blog: The retrieved blog.
 //   - error: An error, if any, encountered during the blog retrieval process.
-func ReadBlog(c proto.BlogServiceClient, id string) (*proto.Blog, error) {
+func ReadBlog(ctx context.Context, c proto.BlogServiceClient, id string) (*proto.Blog, error) {
 	log.Println("Read client blog invoked")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	req := &proto.BlogId{Id: id}
 
@@ -80,11 +74,8 @@ func ReadBlog(c proto.BlogServiceClient, id string) (*proto.Blog, error) {
 //
 // Returns:
 //   - error: An error, if any, encountered during the blog update process.
-func UpdateBlog(c proto.BlogServiceClient, b *proto.Blog) error {
+func UpdateBlog(ctx context.Context, c proto.BlogServiceClient, b *proto.Blog) error {
 	log.Println("Client update blog invoked")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	if _, err := c.UpdateBlog(ctx, b); err != nil {
 		return err
@@ -103,11 +94,8 @@ func UpdateBlog(c proto.BlogServiceClient, b *proto.Blog) error {
 //
 // Returns:
 //   - error: An error, if any, encountered during the blog list operation.
-func ListBlogs(c proto.BlogServiceClient) error {
+func ListBlogs(ctx context.Context, c proto.BlogServiceClient) error {
 	log.Println("Client list blogs invoked")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	stream, err := c.ListBlogs(ctx, &emptypb.Empty{})
 	if err != nil {
@@ -139,11 +127,8 @@ func ListBlogs(c proto.BlogServiceClient) error {
 //
 // Returns:
 //   - error: An error, if any, encountered during the blog delete operation.
-func DeleteBlog(c proto.BlogServiceClient, id string) error {
+func DeleteBlog(ctx context.Context, c proto.BlogServiceClient, id string) error {
 	log.Println("Client delete blog invoked")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	_, err := c.DeleteBlog(ctx, &proto.BlogId{Id: id})
 	if err != nil {

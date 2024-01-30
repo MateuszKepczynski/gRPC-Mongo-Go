@@ -7,14 +7,12 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"time"
 )
 
 func main() {
 	log.Printf("Starting server with address - %s\n", address)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx := context.Background()
 
 	blogServer := server.NewBlogServer(ctx, blogDB, blogCollection)
 	defer blogServer.CloseDBConn(ctx)
