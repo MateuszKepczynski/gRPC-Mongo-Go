@@ -87,3 +87,19 @@ func ListBlogs(c proto.BlogServiceClient) error {
 		log.Printf("Received blog - %v\n", res)
 	}
 }
+
+func DeleteBlog(c proto.BlogServiceClient, id string) error {
+	log.Println("Client delete blog invoked")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := c.DeleteBlog(ctx, &proto.BlogId{Id: id})
+	if err != nil {
+		return err
+	}
+
+	log.Println("Record deleted")
+
+	return nil
+}

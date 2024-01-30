@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-const address = "localhost:5051"
-
 func main() {
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -36,6 +34,10 @@ func main() {
 	}
 
 	if err := client.ListBlogs(c); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := client.DeleteBlog(c, id); err != nil {
 		log.Fatal(err)
 	}
 }
