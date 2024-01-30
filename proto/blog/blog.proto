@@ -17,4 +17,5 @@ message BlogId {
 
 service BlogService {
   rpc CreateBlog(Blog) returns (BlogId);
+  rpc ReadBlog(BlogId) returns (Blog);
 }
