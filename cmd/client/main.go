@@ -34,4 +34,8 @@ func main() {
 	if err := client.UpdateBlog(c, blogData); err != nil {
 		log.Fatal(err)
 	}
+
+	if err := client.ListBlogs(c); err != nil {
+		log.Fatal(err)
+	}
 }

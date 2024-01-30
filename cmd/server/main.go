@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	log.Printf("Starting server with address - %s", address)
+	log.Printf("Starting server with address - %s\n", address)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

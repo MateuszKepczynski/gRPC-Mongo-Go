@@ -136,7 +136,7 @@ func (s *Server) ListBlogs(_ *emptypb.Empty, stream proto.BlogService_ListBlogsS
 		if err := stream.Send(data.DocumentToBlog()); err != nil {
 			return status.Errorf(
 				codes.Internal,
-				fmt.Sprintf("Cannot send data - %v", err),
+				fmt.Sprintf("Cannot send data - %v\n", err),
 			)
 		}
 	}
@@ -144,7 +144,7 @@ func (s *Server) ListBlogs(_ *emptypb.Empty, stream proto.BlogService_ListBlogsS
 	if err := res.Err(); err != nil {
 		return status.Errorf(
 			codes.Internal,
-			fmt.Sprintf("Unknow error - %v", err),
+			fmt.Sprintf("Unknow error - %v\n", err),
 		)
 	}
 
