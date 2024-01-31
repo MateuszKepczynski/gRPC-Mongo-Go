@@ -11,7 +11,7 @@ import (
 type Server struct {
 	proto.BlogServiceServer
 	client     *mongo.Client
-	collection *mongo.Collection
+	collection CollectionInterface
 }
 
 // CloseDBConn disconnects the MongoDB client associated with the server.

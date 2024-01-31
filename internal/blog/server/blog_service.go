@@ -113,7 +113,6 @@ func (s *Server) UpdateBlog(ctx context.Context, req *proto.Blog) (*emptypb.Empt
 	}
 
 	data := &db.BlogItem{
-
 		AuthorID: req.AuthorId,
 		Title:    req.Tile,
 		Content:  req.Content,
@@ -213,7 +212,7 @@ func (s *Server) DeleteBlog(ctx context.Context, req *proto.BlogId) (*emptypb.Em
 		)
 	}
 
-	if res.DeletedCount < 1 {
+	if res.DeletedCount == 0 {
 		return nil, status.Errorf(
 			codes.NotFound,
 			fmt.Sprintf("Cannot find any objects with given ID '%s'", req.Id),

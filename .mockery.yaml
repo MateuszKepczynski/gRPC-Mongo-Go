@@ -1,0 +1,24 @@
+with-expecter: true
+keeptree: False
+disable-version-string: True
+all: True
+packages:
+  github.com/grpc-mongo-go/internal/blog/server:
+    interfaces:
+      CollectionInterface:
+        config:
+          mockname: "CollectionMock"
+          outpkg: collection
+          dir: mocks/mongo/collection
+  github.com/grpc-mongo-go/gen/proto:
+    interfaces:
+      BlogService_ListBlogsServer:
+        config:
+          mockname: "ServerStreamMock"
+          outpkg: servermock
+          dir: mocks/grpc/server
+      BlogServiceClient:
+        config:
+          mockname: "ClientProtoMock"
+          outpkg: clientprotomock
+          dir: mocks/grpc/client
