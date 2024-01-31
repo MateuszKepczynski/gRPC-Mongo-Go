@@ -22,3 +22,8 @@ packages:
           mockname: "ClientProtoMock"
           outpkg: clientprotomock
           dir: mocks/grpc/client
+      BlogService_ListBlogsClient:
+        config:
+          mockname: "ClientStreamProtoMock"
+          outpkg: clientstreamprotomock
+          dir: mocks/grpc/client/stream

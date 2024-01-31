@@ -132,9 +132,9 @@ func TestServer_CreateBlog(t *testing.T) {
 					Title:    "foo title",
 					Content:  "foo content",
 				}
-				oid, _ := primitive.ObjectIDFromHex(blogID)
+
 				expectedRes := &mongo.InsertOneResult{
-					InsertedID: oid,
+					InsertedID: blogOID,
 				}
 				colMock := collection.NewCollectionMock(t)
 				colMock.
@@ -200,10 +200,9 @@ func TestServer_ReadBlog(t *testing.T) {
 			setup: func(f *fields) {
 				collectionMock := collection.NewCollectionMock(t)
 
-				oid, _ := primitive.ObjectIDFromHex(blogID)
 				collectionMock.
 					EXPECT().
-					FindOne(context.Background(), bson.M{"_id": oid}).
+					FindOne(context.Background(), bson.M{"_id": blogOID}).
 					Return(mongo.NewSingleResultFromDocument(db.BlogItem{}, fmt.Errorf("foo bar decode"), nil)).
 					Once()
 
@@ -220,11 +219,10 @@ func TestServer_ReadBlog(t *testing.T) {
 			setup: func(f *fields) {
 				collectionMock := collection.NewCollectionMock(t)
 
-				oid, _ := primitive.ObjectIDFromHex(blogID)
 				collectionMock.
 					EXPECT().
-					FindOne(context.Background(), bson.M{"_id": oid}).
-					Return(mongo.NewSingleResultFromDocument(db.BlogItem{ID: oid}, nil, nil)).
+					FindOne(context.Background(), bson.M{"_id": blogOID}).
+					Return(mongo.NewSingleResultFromDocument(db.BlogItem{ID: blogOID}, nil, nil)).
 					Once()
 
 				f.collection = collectionMock
@@ -294,12 +292,11 @@ func TestServer_UpdateBlog(t *testing.T) {
 			setup: func(f *fields) {
 				collectionMock := collection.NewCollectionMock(t)
 
-				oid, _ := primitive.ObjectIDFromHex(blogID)
 				collectionMock.
 					EXPECT().
 					UpdateOne(
 						context.Background(),
-						bson.M{"_id": oid},
+						bson.M{"_id": blogOID},
 						bson.M{"$set": &db.BlogItem{
 							AuthorID: "Foo Author",
 							Title:    "Foo Title",
@@ -326,12 +323,11 @@ func TestServer_UpdateBlog(t *testing.T) {
 			setup: func(f *fields) {
 				collectionMock := collection.NewCollectionMock(t)
 
-				oid, _ := primitive.ObjectIDFromHex(blogID)
 				collectionMock.
 					EXPECT().
 					UpdateOne(
 						context.Background(),
-						bson.M{"_id": oid},
+						bson.M{"_id": blogOID},
 						bson.M{"$set": &db.BlogItem{
 							AuthorID: "Foo Author",
 							Title:    "Foo Title",
@@ -358,12 +354,11 @@ func TestServer_UpdateBlog(t *testing.T) {
 			setup: func(f *fields) {
 				collectionMock := collection.NewCollectionMock(t)
 
-				oid, _ := primitive.ObjectIDFromHex(blogID)
 				collectionMock.
 					EXPECT().
 					UpdateOne(
 						context.Background(),
-						bson.M{"_id": oid},
+						bson.M{"_id": blogOID},
 						bson.M{"$set": &db.BlogItem{
 							AuthorID: "Foo Author",
 							Title:    "Foo Title",
@@ -520,8 +515,8 @@ func TestServer_ListBlogs(t *testing.T) {
 			s := &Server{
 				collection: tt.fields.collection,
 			}
-			err := s.ListBlogs(tt.args.in0, tt.args.stream)
-			if err != nil {
+
+			if err := s.ListBlogs(tt.args.in0, tt.args.stream); err != nil {
 				e, _ := status.FromError(err)
 				assert.Equal(t, tt.wantErrMsg, e.Message())
 			}
@@ -614,8 +609,8 @@ func TestServer_DeleteBlog(t *testing.T) {
 			s := &Server{
 				collection: tt.fields.collection,
 			}
-			_, err := s.DeleteBlog(tt.args.ctx, tt.args.req)
-			if err != nil {
+
+			if _, err := s.DeleteBlog(tt.args.ctx, tt.args.req); err != nil {
 				e, _ := status.FromError(err)
 				assert.Equal(t, tt.wantErrMsg, e.Message())
 			}
