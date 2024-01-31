@@ -1,16 +1,49 @@
 # gRPC-Mongo-Go
 
-Showcase of gRPC, Mongo and GoLang
+## About
 
-## File generation
+This project is a demonstration of the use of Go, gRPC, and MongoDB.
+
+The gRPC server is responsible for:
+
+- Adding a Blog record.
+- Updating the Blog record.
+- Deleting a Blog by ID.
+- Returning a Blog by ID.
+- Returning a list of all added Blogs.
+
+The gRPC client is responsible for using the server and performing the following actions:
+
+1) Create a new Blog record.
+2) Retrieving the Blog by ID.
+3) Update the Blog record.
+4) Retrieving a list of all available Blogs.
+5) Deleting a Blog by ID.
+
+## Building
+
+```shell
+make build
+```
+
+## Project startup
+
+```shell
+# start MongoDB
+make start-mongodb
+
+# start Go server
+make start-server
+
+# start Go client
+make start-client
+```
+
+## Requirements
 
 ### Protobuf
 
-In project root run:
-
-```shell
-protoc -I .\gen\proto --go_out=. --go_opt=module=github.com/grpc-mongo-go --go-grpc_out=. --go-grpc_opt=module=github.com/grpc-mongo-go .\gen\proto\*.proto
-```
+[Protobuf Installation guide](https://grpc.io/docs/protoc-installation/)
 
 ### Mockery
 
@@ -20,16 +53,4 @@ Install mockery:
 go install github.com/vektra/mockery/v2@v2.40.1
 ```
 
-In project root run:
-
-```shell
-mockery
-```
-
 [Mockery documentation](https://vektra.github.io/mockery/latest/)
-
-## Project start:
-
-1) Start docker container using docker-compose.
-2) Start Go server.
-3) Start Go client and watch the result.
