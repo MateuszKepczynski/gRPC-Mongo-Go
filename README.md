@@ -23,20 +23,18 @@ The gRPC client is responsible for using the server and performing the following
 ## Building
 
 ```shell
+# build exe files.
 make build
 ```
 
 ## Project startup
 
 ```shell
-# start MongoDB
-make start-mongodb
+# build and start containers 
+make build-start
 
-# start Go server
-make start-server
-
-# start Go client
-make start-client
+# start containers
+make start
 ```
 
 ## Requirements

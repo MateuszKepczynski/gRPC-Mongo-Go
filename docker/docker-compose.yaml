@@ -21,3 +21,23 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
+
+  go-server:
+    build:
+      context: ../
+      dockerfile: ./docker/server/Dockerfile
+    image: server/1.0
+    ports:
+      - 5051:5051
+    network_mode: "host"
+    depends_on:
+      - mongo
+
+  go-client:
+    build:
+      context: ../
+      dockerfile: ./docker/client/Dockerfile
+    image: client/1.0
+    network_mode: "host"
+    depends_on:
+      - go-server

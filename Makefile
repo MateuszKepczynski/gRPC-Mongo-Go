@@ -14,6 +14,14 @@ build:
 	@echo "Building Windows client executable"
 	@go build -o bin/client/client.exe ./cmd/client/
 
+build-start:
+	@echo "Building and running app via docker-compose"
+	@docker-compose -f ./docker/docker-compose.yaml up --build
+
+start:
+	@echo "Starting app via docker-compose"
+	@docker-compose -f ./docker/docker-compose.yaml up
+
 start-server:
 	@echo "Opening Server Go Binary File"
 	@./bin/server/server.exe
@@ -29,7 +37,3 @@ generate-proto:
 generate-mocks:
 	@echo "Generating mock files"
 	@mockery
-
-start-mongodb:
-	@echo "Starting mongodb with docker-compose"
-	@docker-compose -f ./docker/docker-compose.yaml up --build
