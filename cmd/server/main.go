@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/grpc-mongo-go/gen/proto"
+	"github.com/grpc-mongo-go/internal/blog/db"
 	"github.com/grpc-mongo-go/internal/blog/server"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -18,7 +19,7 @@ func main() {
 
 	ctx := context.Background()
 
-	blogServer := server.NewBlogServer(ctx, blogDB, blogCollection)
+	blogServer := server.NewBlogServer(ctx, db.MongoDBAddress, blogDB, blogCollection)
 	defer blogServer.CloseDBConn(ctx)
 
 	lis, err := net.Listen("tcp", address)

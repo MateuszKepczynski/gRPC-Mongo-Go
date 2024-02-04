@@ -42,8 +42,8 @@ func (s *Server) CloseDBConn(ctx context.Context) error {
 //
 // Returns:
 //   - *Server: A new instance of the Blog gRPC server.
-func NewBlogServer(ctx context.Context, database, collection string) *Server {
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:root@localhost:27017/"))
+func NewBlogServer(ctx context.Context, address, database, collection string) *Server {
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(address))
 	if err != nil {
 		log.Fatal(err)
 	}
